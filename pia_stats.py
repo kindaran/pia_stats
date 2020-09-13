@@ -120,15 +120,20 @@ def main():
         
         keyValues = []
         for idx,row in enumerate(keyRows):
-            splitRow = row.split(":")
+            splitRow = row.split(":")       ##rows are in the format <keyword>: <value>
             if splitRow[0].strip() != "Date":
+                ##these rows are either "Upload" or "Download"
                 keyValues.append(float(splitRow[1].split()[0].strip()))
             else:
+                #this row is "Date"
                 keyValues.append(splitRow[1].strip())
             #END IF
+            ##every 3 rows from the log file make 1 row of data: date, upload, download
+            ##so the above code builds a data row and then it is added to a final csv output row
             if (idx + 1) % 3 == 0:
                 output.append(keyValues)
                 keyValues = []
+            #END IF
         #END FOR
         logging.debug(output)
         logging.info(f"Total rows to write to CSV: {len(output)}")
