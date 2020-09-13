@@ -130,7 +130,7 @@ def main():
             #END IF
             ##every 3 rows from the log file make 1 row of data: date, upload, download
             ##so the above code builds a data row and then it is added to a final csv output row
-            if (idx + 1) % 3 == 0:
+            if (idx + 1) % 3 == 0:      ##cant use raw idx because 0 mod anything is zero and that causes a problem
                 output.append(keyValues)
                 keyValues = []
             #END IF
