@@ -102,7 +102,7 @@ def main():
     try:
         logging.info("*****PROCESSING LOG FILE")
         ##read log file as text
-        file = readFile(f"/home/kindaran/Logs/speedtest.log")
+        file = readFile(f"/users/bsellick/.logs/speedtest.log")
         # file = readFile(f"./speedtest.log")
         assert file != None, "Error retrieving log file"
         
@@ -142,7 +142,7 @@ def main():
         outputFilename = generateOutputFilename("speedtest.log","csv")
         assert outputFilename != None, "Error generating target filename"
         
-        assert writeCSVFile("/home/kindaran/Logs/" + outputFilename,output), "Error writing CSV file"
+        assert writeCSVFile("/users/bsellick/.logs/" + outputFilename,output), "Error writing CSV file"
         
     except Exception as e:
         msg = str(e)
