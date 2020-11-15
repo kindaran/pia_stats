@@ -76,7 +76,7 @@ def writeCSVFile(p_filename, p_rows):
         if len(p_rows) > 0:
             output_file = p_filename
             logging.debug('Writing to file: %s' % (output_file))
-            with open(output_file, 'w') as hFile:
+            with open(output_file, 'w', newline='') as hFile:
                 writer = csv.writer(hFile,quoting=csv.QUOTE_ALL)
                 writer.writerows(p_rows)
             #END WITH
@@ -119,18 +119,38 @@ def main():
         output = [header]     
         
         keyValues = []
+        prevRow = ""
+        rowCount = 0
         for idx,row in enumerate(keyRows):
             splitRow = row.split(":")       ##rows are in the format <keyword>: <value>
+            logging.debug(f"Processing key {splitRow[0].strip()}")
+            
             if splitRow[0].strip() != "Date":
                 ##these rows are either "Upload" or "Download"
                 keyValues.append(float(splitRow[1].split()[0].strip()))
+                prevRow = splitRow[0].strip()
+                rowCount += 1
             else:
                 #this row is "Date"
-                keyValues.append(splitRow[1].strip())
+                ##Check for two Date: rows in a row. If true, this is a case where the first
+                ##Date: represents a broken speedtest run so overwrite that last date with the next                
+                if prevRow == "Date":
+                    keyValues[0] = splitRow[1].strip()
+                    prevRow = splitRow[0].strip()
+                    rowCount = 1
+                else:
+                    keyValues.append(splitRow[1].strip())
+                    prevRow = splitRow[0].strip()
+                    rowCount += 1
+                #END IF
             #END IF
+            logging.debug(f"keyValues: {keyValues}")
+            
             ##every 3 rows from the log file make 1 row of data: date, upload, download
             ##so the above code builds a data row and then it is added to a final csv output row
-            if (idx + 1) % 3 == 0:      ##cant use raw idx because 0 mod anything is zero and that causes a problem
+            ##idx is not used because sometimes the index needs to be reset when a broken
+            ##speedtest entry is encountered so a separate index (rowCount) is used
+            if (rowCount) % 3 == 0:
                 output.append(keyValues)
                 keyValues = []
             #END IF
@@ -155,7 +175,7 @@ def main():
 ###                                 CALL MAIN                               ###
 ###############################################################################
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
+logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
 
 if __name__ == '__main__':
 
