@@ -175,7 +175,7 @@ def main():
 ###                                 CALL MAIN                               ###
 ###############################################################################
 
-logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(asctime)s %(message)s", datefmt="%m/%d/%Y %I:%M:%S %p")
 
 if __name__ == '__main__':
 
